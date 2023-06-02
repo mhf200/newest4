@@ -1,11 +1,11 @@
 import uuid
 from django.db import models
-
+from uuid import uuid4
 
 class Question(models.Model):
     uuid = models.UUIDField(default=uuid.uuid4, editable=False, unique=True)
     question_text = models.CharField(max_length=200)
-    correct_answer = models.CharField(max_length=200)
+    correct_answer = models.UUIDField(default=uuid4, editable=False)
     username = models.CharField(max_length=200)
 
     def __str__(self):

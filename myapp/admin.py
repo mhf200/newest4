@@ -7,8 +7,14 @@ class ChoiceInline(admin.TabularInline):
 
 
 class QuestionAdmin(admin.ModelAdmin):
-    list_display = ('question_text', 'username', 'correct_answer')
+    list_display = ('question_text', 'username', 'display_correct_answer')
     inlines = [ChoiceInline]
+    readonly_fields = ('display_correct_answer',)
+
+    def display_correct_answer(self, obj):
+        return str(obj.correct_answer)
+
+    display_correct_answer.short_description = 'Correct Answer'
 
 
 class AnswerAdmin(admin.ModelAdmin):

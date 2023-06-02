@@ -13,15 +13,16 @@ def get_question(request):
 
         question = Question.objects.order_by('?').first()
 
-
         translation = Translation.objects.filter(question=question, language=language).first()
-
 
         if not translation:
             translator = Translator(to_lang=language)
             translated_question = translator.translate(question.question_text)
             translated_choices = [translator.translate(choice.choice_text) for choice in question.choices.all()]
-            translated_correct_answer = str(uuid.uuid4())
+
+            # Use the same UUID for correct_answer and translated_correct_answer
+            translated_correct_answer = question.correct_answer
+
             translation = Translation(
                 question=question,
                 translated_question_text=translated_question,
@@ -41,7 +42,6 @@ def get_question(request):
         return JsonResponse(response)
 
     return JsonResponse({'error': 'Invalid request method.'}, status=400)
-
 
 @csrf_exempt
 def answer_question(request):
@@ -65,4 +65,3 @@ def answer_question(request):
                 return JsonResponse({'error': 'Question does not exist.'}, status=400)
 
     return JsonResponse({'error': 'Invalid request method.'}, status=400)
-
